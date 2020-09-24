@@ -33,14 +33,15 @@
             <a href="#download-manager"><span class="glyphicon glyphicon-cloud-download">&nbsp;<b>下载记录</b></span></a>
         </li>
         <li class="jq-nav-item">
+            <a href="#category-manager"><span class="glyphicon glyphicon-filter">&nbsp;<b>分类管理</b></span></a>
+        </li>
+        <li class="jq-nav-item">
             <a href="#file-manager"><span class="glyphicon glyphicon-file">&nbsp;<b>文件管理</b></span></a>
         </li>
         <li class="jq-nav-item">
             <a href="#auth-manager"><span class="glyphicon glyphicon-lock">&nbsp;<b>权限管理</b></span></a>
         </li>
-        <li class="jq-nav-item">
-            <a href="#category-manager"><span class="glyphicon glyphicon-filter">&nbsp;<b>分类管理</b></span></a>
-        </li>
+
         <li class="jq-nav-item">
             <a href="#user-manager"><span class="glyphicon glyphicon-user">&nbsp;<b>用户管理</b></span></a>
         </li>
@@ -64,9 +65,10 @@
             <table class="table table-bordered table-hover table-responsive table-condensed">
                 <thead>
                 <tr>
-                    <th>编号</th>
+                    <th>序号</th>
                     <th>用户名</th>
                     <th>邮箱</th>
+                    <th>文件名</th>
                     <th>文件路径</th>
                     <th>分类名</th>
                     <th>链接</th>
@@ -78,6 +80,7 @@
                     <td>{{key+1}}</td>
                     <td>{{upload.username}}</td>
                     <td>{{upload.email}}</td>
+                    <td>{{upload.fileName}}</td>
                     <td><a href="javascript:" onclick="alerts($(event.srcElement).attr('data-title'));"
                            v-bind:title="upload.localUrl" data-toggle="tooltip"
                            v-bind:data-title="upload.localUrl">查看</a></td>
@@ -102,9 +105,9 @@
             <table class="table table-bordered table-hover table-responsive table-condensed">
                 <thead>
                 <tr>
-                    <th>编号</th>
+                    <th>序号</th>
                     <!--<th>用户编号</th>-->
-                    <!--<th>文件编号</th>-->
+                    <th>文件编号</th>
                     <th>用户名</th>
                     <th>邮箱</th>
                     <th>文件名</th>
@@ -117,7 +120,7 @@
                 <tr v-for="(download,key) in downloaded">
                     <td>{{key+1}}</td>
                     <!--<td>{{download.userId}}</td>-->
-                    <!--<td>{{download.fileId}}</td>-->
+                    <td>{{download.fileId}}</td>
                     <td>{{download.username}}</td>
                     <td>{{download.email}}</td>
                     <td>{{download.fileName}}</td>
@@ -167,7 +170,7 @@
                             </div>
                         </div>
                     </th>
-                    <th>编号</th>
+                    <th>序号</th>
                     <th>文件编号</th>
                     <th>用户名</th>
                     <th>本地路径</th>
@@ -247,7 +250,7 @@
                             </div>
                         </div>
                     </th>
-                    <th>编号</th>
+                    <th>序号</th>
                     <th>用户名</th>
                     <th>文件名</th>
                     <th>本地路径</th>
@@ -308,7 +311,7 @@
             <table class="table table-bordered table-hover table-responsive table-condensed">
                 <thead>
                 <tr>
-                    <th>编号</th>
+                    <th>序号</th>
                     <th>名称</th>
                     <th>创建时间</th>
                     <th class="text-center">动作</th>
@@ -369,7 +372,7 @@
                             </div>
                         </div>
                     </th>
-                    <th>编号</th>
+                    <th>序号</th>
                     <th>头像</th>
                     <th>用户名</th>
                     <th>真实名</th>

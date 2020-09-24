@@ -25,17 +25,17 @@
             {
                 "selector": ".random-image",
                 "style": [
-                    "background-color: #800080",
-                    "color: #FFF300"
+                    "background-color: #084c61",
+                    "color: #efefd0"
                 ]
             },
             {
                 "selector": ".jq-nav-item a",
-                "style": "color: #FFF300"
+                "style": "color: #efefd0"
             },
             {
                 "selector": ".jq-nav",
-                "style": "background-color: #800080"
+                "style": "background-color: #084c61"
             },
             {
                 "selector": [
