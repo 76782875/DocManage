@@ -1,5 +1,6 @@
 package com.gala.docmanage.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gala.docmanage.dao.AuthDAO;
 import com.gala.docmanage.model.AuthRecord;
 import com.gala.docmanage.util.BeanUtils;
@@ -18,7 +19,7 @@ import java.util.List;
 
 
 @Service
-public class AuthServiceImpl implements IAuthService {
+public class AuthServiceImpl extends ServiceImpl<AuthDAO, Auth> implements IAuthService {
 
     private final AuthDAO authDAO;
 

@@ -70,7 +70,7 @@ $(document).ready(function () {
                 }
                 globalConfig.background.imageList = list;
             }
-            changeBackgroundImage();
+            // changeBackgroundImage();
         }
         setCSS();
     });
@@ -82,22 +82,23 @@ $(document).ready(function () {
 });
 
 function changeBackgroundImage() {
-    if (globalConfig.background.useImage) {
-        var idx = 0;
-        if (globalConfig.background.random) {
-            idx = Math.floor(Math.random() * globalConfig.background.imageList.length);
-        } else {
-            /** @namespace globalConfig.background.imageIndex */
-            idx = globalConfig.background.imageIndex;
-        }
-        /** @namespace globalConfig.background.imageList */
-        var url = globalConfig.background.imageList[idx];
-        if (typeof url !== "undefined") {
-            var body = $("body");
-            $(body).css("background", "url('" + url + "') no-repeat center center fixed");
-            $(body).css("background-size", "cover");
-        }
-    }
+    // if (globalConfig.background.useImage) {
+    //     var idx = 0;
+    //     if (globalConfig.background.random) {
+    //         idx = Math.floor(Math.random() * globalConfig.background.imageList.length);
+    //     } else {
+    //         /** @namespace globalConfig.background.imageIndex */
+    //         idx = globalConfig.background.imageIndex;
+    //     }
+    //     /** @namespace globalConfig.background.imageList */
+    //     var url = globalConfig.background.imageList[idx];
+    //     if (typeof url !== "undefined") {
+    //         var body = $("body");
+    //         $(body).css("background", "url('" + url + "') no-repeat center center fixed");
+    //         $(body).css("background-size", "cover");
+    //     }
+    // }
+    location.reload();
 }
 
 function setCSS() {

@@ -1,5 +1,6 @@
 package com.gala.docmanage.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gala.docmanage.entity.Category;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CategoryDAO {
+public interface CategoryDAO extends BaseMapper<Category> {
 
     /**
      * 通过分类名获取ID

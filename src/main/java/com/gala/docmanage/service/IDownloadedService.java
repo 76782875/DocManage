@@ -1,11 +1,13 @@
 package com.gala.docmanage.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.gala.docmanage.entity.Download;
 import com.gala.docmanage.model.DownloadRecord;
 
 import java.util.List;
 
 
-public interface IDownloadedService {
+public interface IDownloadedService extends IService<Download> {
 
     /**
      * 添加下载记录

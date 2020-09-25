@@ -17,7 +17,7 @@ public class DefaultValues {
     /**
      * Controller包路径
      */
-    public static final String CONTROLLER_PACKAGE = "com.zhazhapan.efo.web.controller";
+    public static final String CONTROLLER_PACKAGE = "com.gala.docmanage.web.controller";
 
     /**
      * 配置文件路径
@@ -32,9 +32,7 @@ public class DefaultValues {
     /**
      * 默认存储路径
      */
-    public static final String STORAGE_PATH = ValueConsts.USER_HOME + ValueConsts.SEPARATOR + "Desktop" + ValueConsts
-            .SEPARATOR;
-
+    public static final String STORAGE_PATH = System.getProperty("user.dir") + ValueConsts.SEPARATOR;
     /**
      * 首页映射路径
      */

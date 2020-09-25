@@ -1,5 +1,6 @@
 package com.gala.docmanage.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gala.docmanage.dao.CategoryDAO;
 import com.gala.docmanage.entity.Category;
 import com.gala.docmanage.modules.constant.DefaultValues;
@@ -12,7 +13,7 @@ import java.util.List;
 
 
 @Service
-public class CategoryServiceImpl implements ICategoryService {
+public class CategoryServiceImpl extends ServiceImpl<CategoryDAO, Category> implements ICategoryService  {
 
     private final CategoryDAO categoryDAO;
 

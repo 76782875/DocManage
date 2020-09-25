@@ -1,11 +1,12 @@
 package com.gala.docmanage.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.gala.docmanage.entity.Category;
 
 import java.util.List;
 
 
-public interface ICategoryService {
+public interface ICategoryService extends IService<Category> {
 
     /**
      * 添加一个分类

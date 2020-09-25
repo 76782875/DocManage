@@ -1,12 +1,13 @@
 package com.gala.docmanage.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.gala.docmanage.model.AuthRecord;
 import com.gala.docmanage.entity.Auth;
 
 import java.util.List;
 
 
-public interface IAuthService {
+public interface IAuthService extends IService<Auth> {
 
     /**
      * 添加权限集

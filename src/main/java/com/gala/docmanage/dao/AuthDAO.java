@@ -1,5 +1,6 @@
 package com.gala.docmanage.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gala.docmanage.model.AuthRecord;
 import com.gala.docmanage.dao.sqlprovider.AuthSqlProvider;
 import com.gala.docmanage.entity.Auth;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AuthDAO {
+public interface AuthDAO extends BaseMapper<Auth> {
 
     /**
      * 检测某个权限是否存在

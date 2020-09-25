@@ -4,25 +4,25 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema docManage
+-- Schema doc_manage
 -- -----------------------------------------------------
 -- 线上文件管理系统
-DROP SCHEMA IF EXISTS `docManage` ;
+DROP SCHEMA IF EXISTS `doc_manage` ;
 
 -- -----------------------------------------------------
--- Schema docManage
+-- Schema doc_manage
 --
 -- 线上文件管理系统
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `docManage` DEFAULT CHARACTER SET utf8 ;
-USE `docManage` ;
+CREATE SCHEMA IF NOT EXISTS `doc_manage` DEFAULT CHARACTER SET utf8 ;
+USE `doc_manage` ;
 
 -- -----------------------------------------------------
--- Table `docManage`.`user`
+-- Table `doc_manage`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `docManage`.`user` ;
+DROP TABLE IF EXISTS `doc_manage`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `docManage`.`user` (
+CREATE TABLE IF NOT EXISTS `doc_manage`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '用户编号',
   `username` VARCHAR(16) NOT NULL DEFAULT '' COMMENT '用户名',
   `real_name` VARCHAR(45) NULL DEFAULT '' COMMENT '真实姓名',
@@ -47,11 +47,11 @@ COMMENT = '用户表';
 
 
 -- -----------------------------------------------------
--- Table `docManage`.`category`
+-- Table `doc_manage`.`category`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `docManage`.`category` ;
+DROP TABLE IF EXISTS `doc_manage`.`category` ;
 
-CREATE TABLE IF NOT EXISTS `docManage`.`category` (
+CREATE TABLE IF NOT EXISTS `doc_manage`.`category` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL DEFAULT '',
   `create_time` DATETIME NOT NULL DEFAULT current_timestamp,
@@ -63,11 +63,11 @@ COMMENT = '文件分类';
 
 
 -- -----------------------------------------------------
--- Table `docManage`.`file`
+-- Table `doc_manage`.`file`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `docManage`.`file` ;
+DROP TABLE IF EXISTS `doc_manage`.`file` ;
 
-CREATE TABLE IF NOT EXISTS `docManage`.`file` (
+CREATE TABLE IF NOT EXISTS `doc_manage`.`file` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '编号',
   `name` VARCHAR(256) NULL DEFAULT '' COMMENT '文件名',
   `suffix` VARCHAR(16) NOT NULL DEFAULT '' COMMENT '文件后缀',
@@ -95,12 +95,12 @@ CREATE TABLE IF NOT EXISTS `docManage`.`file` (
   UNIQUE INDEX `visit_url_UNIQUE` (`visit_url` ASC),
   CONSTRAINT `fk_file_user`
     FOREIGN KEY (`user_id`)
-    REFERENCES `docManage`.`user` (`id`)
+    REFERENCES `doc_manage`.`user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_file_category1`
     FOREIGN KEY (`category_id`)
-    REFERENCES `docManage`.`category` (`id`)
+    REFERENCES `doc_manage`.`category` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -108,11 +108,11 @@ COMMENT = '文件列表';
 
 
 -- -----------------------------------------------------
--- Table `docManage`.`download`
+-- Table `doc_manage`.`download`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `docManage`.`download` ;
+DROP TABLE IF EXISTS `doc_manage`.`download` ;
 
-CREATE TABLE IF NOT EXISTS `docManage`.`download` (
+CREATE TABLE IF NOT EXISTS `doc_manage`.`download` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '编号',
   `create_time` DATETIME NOT NULL DEFAULT current_timestamp COMMENT '下载时间',
   `user_id` INT NOT NULL,
@@ -123,12 +123,12 @@ CREATE TABLE IF NOT EXISTS `docManage`.`download` (
   INDEX `fk_download_file1_idx` (`file_id` ASC),
   CONSTRAINT `fk_download_user1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `docManage`.`user` (`id`)
+    REFERENCES `doc_manage`.`user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_download_file1`
     FOREIGN KEY (`file_id`)
-    REFERENCES `docManage`.`file` (`id`)
+    REFERENCES `doc_manage`.`file` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -136,11 +136,11 @@ COMMENT = '下载历史表';
 
 
 -- -----------------------------------------------------
--- Table `docManage`.`auth`
+-- Table `doc_manage`.`auth`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `docManage`.`auth` ;
+DROP TABLE IF EXISTS `doc_manage`.`auth` ;
 
-CREATE TABLE IF NOT EXISTS `docManage`.`auth` (
+CREATE TABLE IF NOT EXISTS `doc_manage`.`auth` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `is_uploadable` INT NOT NULL DEFAULT 1 COMMENT '是否可以上传（需要判断对应的文件是否是文件夹），0不可以，1可以',
   `is_deletable` INT NOT NULL DEFAULT 1 COMMENT '是否可以删除，0不可以，1可以',
@@ -156,12 +156,12 @@ CREATE TABLE IF NOT EXISTS `docManage`.`auth` (
   INDEX `fk_auth_file1_idx` (`file_id` ASC),
   CONSTRAINT `fk_auth_user1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `docManage`.`user` (`id`)
+    REFERENCES `doc_manage`.`user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_auth_file1`
     FOREIGN KEY (`file_id`)
-    REFERENCES `docManage`.`file` (`id`)
+    REFERENCES `doc_manage`.`file` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

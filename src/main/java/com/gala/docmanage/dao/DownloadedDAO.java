@@ -1,6 +1,8 @@
 package com.gala.docmanage.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gala.docmanage.dao.sqlprovider.DownloadedSqlProvider;
+import com.gala.docmanage.entity.Download;
 import com.gala.docmanage.model.DownloadRecord;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -12,7 +14,7 @@ import java.util.List;
 
 
 @Repository
-public interface DownloadedDAO {
+public interface DownloadedDAO extends BaseMapper<Download> {
 
     /**
      * 新增一条下载记录

@@ -62,3 +62,4 @@ nbdist/
 src/main/resources/templates/
 /out/
 /bin/
+/upload/
