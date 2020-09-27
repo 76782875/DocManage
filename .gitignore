@@ -63,3 +63,4 @@ src/main/resources/templates/
 /out/
 /bin/
 /upload/
+token.json
