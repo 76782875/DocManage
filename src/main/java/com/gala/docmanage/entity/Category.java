@@ -12,9 +12,14 @@ public class Category {
     private int id;
 
     /**
-     * 分类名称
+     * 项目名称
      */
     private String name;
+
+    /**
+     * 项目号
+     */
+    private int code;
 
     private Timestamp createTime;
 
@@ -22,9 +27,10 @@ public class Category {
         this.name = name;
     }
 
-    public Category(int id, String name, Timestamp createTime) {
+    public Category(int id, String name,int code ,Timestamp createTime) {
         this.id = id;
         this.name = name;
+        this.code = code;
         this.createTime = createTime;
     }
 
@@ -56,5 +62,13 @@ public class Category {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

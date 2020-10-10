@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/category")
-@Api(value = "/category", description = "文件分类相关操作")
+@Api(value = "/category", description = "文件项目相关操作")
 public class CategoryController {
 
     private final ICategoryService categoryService;
@@ -28,30 +28,30 @@ public class CategoryController {
     @Autowired
     public CategoryController(ICategoryService categoryService) {this.categoryService = categoryService;}
 
-    @ApiOperation(value = "新增一个分类")
+    @ApiOperation(value = "新增一个项目")
     @AuthInterceptor(InterceptorLevel.ADMIN)
-    @RequestMapping(value = "/{name}", method = RequestMethod.POST)
-    public String add(@PathVariable("name") String name) {
-        return ControllerUtils.getResponse(categoryService.insert(name));
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String add(String name,int code) {
+        return ControllerUtils.getResponse(categoryService.insert(name,code));
     }
 
-    @ApiOperation(value = "更新分类名称")
+    @ApiOperation(value = "更新项目名称")
     @ApiImplicitParam(name = "name", value = "新的名称", required = true)
     @AuthInterceptor(InterceptorLevel.ADMIN)
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public String update(@PathVariable("id") int id, String name) {
-        boolean isSuccess = Checker.isNotEmpty(name) && categoryService.update(id, name);
+    public String update(@PathVariable("id") int id, String name,int code) {
+        boolean isSuccess = Checker.isNotEmpty(name) && categoryService.update(id, name,code);
         return ControllerUtils.getResponse(isSuccess);
     }
 
-    @ApiOperation(value = "删除一个分类")
+    @ApiOperation(value = "删除一个项目")
     @AuthInterceptor(InterceptorLevel.ADMIN)
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String remove(@PathVariable("id") int id) {
         return ControllerUtils.getResponse(categoryService.remove(id));
     }
 
-    @ApiOperation(value = "获取一个分类")
+    @ApiOperation(value = "获取一个项目")
     @AuthInterceptor(InterceptorLevel.NONE)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String getById(@PathVariable("id") int id) {
@@ -63,7 +63,7 @@ public class CategoryController {
         }
     }
 
-    @ApiOperation(value = "获取所有分类")
+    @ApiOperation(value = "获取所有项目")
     @AuthInterceptor(InterceptorLevel.NONE)
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public String getAll() {

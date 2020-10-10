@@ -15,7 +15,7 @@ public interface ICategoryService extends IService<Category> {
      *
      * @return 是否添加成功
      */
-    boolean insert(String name);
+    boolean insert(String name,int code);
 
     /**
      * 删除一个分类
@@ -34,7 +34,7 @@ public interface ICategoryService extends IService<Category> {
      *
      * @return 是否更新成功
      */
-    boolean update(int id, String name);
+    boolean update(int id, String name,int code);
 
     /**
      * 获取一个分类

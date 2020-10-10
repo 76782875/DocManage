@@ -88,8 +88,8 @@ Vue.component('file-filter-item', {
     '            <br/>' +
     '            <div class="row">' +
     '                <div class="col-sm-2 col-4">' +
-    '                    <input type="text" title="指定分类" data-toggle="tooltip" class="form-control file-filter category-filter"' +
-    '                           placeholder="分类名称" onkeyup="fileFilter();"/>' +
+    '                    <input type="text" title="指定项目" data-toggle="tooltip" class="form-control file-filter category-filter"' +
+    '                           placeholder="项目名称" onkeyup="fileFilter();"/>' +
     '                </div>' +
     '                <div class="col-sm-3 col-4">' +
     '                    <input type="text" title="指定用户" data-toggle="tooltip" class="form-control file-filter user-filter"' +
@@ -290,7 +290,7 @@ function deleteCategory() {
                 alerts("删除失败，请稍后重新尝试");
             }
         }, error: function () {
-            alerts("删除失败，该分类已被多个文件引用，无法删除（可尝试修改文件分类或删除文件）。");
+            alerts("删除失败，该项目已被多个文件引用，无法删除（可尝试修改文件项目或删除文件）。");
         }
     });
 }
@@ -438,36 +438,43 @@ function getServerFileByPath(addTo) {
 }
 
 function editCategory() {
-    $("#category-title").text("编辑分类");
+    $("#category-title").text("编辑项目");
     var srcTr = $(event.srcElement).parents("tr");
     var categoryId = $(srcTr).children("td.category-id").text();
     $("#category-id").val(categoryId);
     $("#category-key").val($(srcTr).children("td.hide").text());
+    $("#category-code").val($(srcTr).children("td.category-code").text());
     $("#category-name").val($(srcTr).children("td.category-name").text());
 }
 
 function saveCategory() {
     var name = $("#category-name").val();
+    var code = $("#category-code").val();
     if (isEmpty(name)) {
-        alerts("分类名不能为空");
+        alerts("项目名不能为空");
+        if (isEmpty(code)) {
+            alerts("项目号不能为空");
+        }
     } else {
         var id = $("#category-id").val();
         layer.load(1);
         if (id > 0) {
             $.ajax({
-                url: "/category/" + id, type: "PUT", data: {name: name}, success: function (data) {
+                url: "/category/" + id, type: "PUT", data: {name: name,code:code}, success: function (data) {
                     if (data.indexOf("success") > 0) {
-                        app.categories[$("#category-key").val()].name = name;
+                        getCategory();
                     }
                     responseTip(data);
                 }
             });
         } else {
-            $.post("/category/" + name, function (data) {
-                if (data.indexOf("success") > 0) {
-                    getCategory();
+            $.ajax({
+                url: "/category/add" , type: "POST", data: {name: name,code:code}, success: function (data) {
+                    if (data.indexOf("success") > 0) {
+                        getCategory();
+                    }
+                    responseTip(data);
                 }
-                responseTip(data);
             });
         }
     }
@@ -485,7 +492,8 @@ function setCategoryToDefault() {
     $("#category-id").val(0);
     $("#category-key").val(0);
     $("#category-name").val("");
-    $("#category-title").text("添加新分类");
+    $("#category-code").val("");
+    $("#category-title").text("添加新项目");
 }
 
 function addToSelectedServerFile(json) {

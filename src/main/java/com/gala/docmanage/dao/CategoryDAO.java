@@ -27,8 +27,8 @@ public interface CategoryDAO extends BaseMapper<Category> {
      *
      * @return 是否添加成功
      */
-    @Insert("insert into category(name) values(#{name})")
-    boolean insertCategory(String name);
+    @Insert("insert into category(name,code) values(#{name},#{code})")
+    boolean insertCategory(String name,int code);
 
     /**
      * 通过编号删除一个分类
@@ -58,8 +58,8 @@ public interface CategoryDAO extends BaseMapper<Category> {
      *
      * @return 是否更新成功
      */
-    @Update("update category set name=#{name} where id=#{id}")
-    boolean updateNameById(@Param("id") int id, @Param("name") String name);
+    @Update("update category set name=#{name},code=#{code} where id=#{id}")
+    boolean updateNameById(@Param("id") int id, @Param("name") String name,@Param("code") int code);
 
     /**
      * 通过分类名更新分类名

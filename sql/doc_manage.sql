@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `doc_manage`.`file` (
   `description` VARCHAR(1024) NULL DEFAULT '' COMMENT '文件描述',
   `check_times` INT NOT NULL DEFAULT 0 COMMENT '查看次数',
   `download_times` INT NOT NULL DEFAULT 0 COMMENT '下载次数',
-  `tag` VARCHAR(45) NULL DEFAULT '' COMMENT '文件标签',
+  `tag` VARCHAR(45) NULL DEFAULT '' COMMENT '文件案卷号',
   `user_id` INT NOT NULL,
   `category_id` INT NOT NULL,
   `is_downloadable` INT NOT NULL DEFAULT 1 COMMENT '（全局权限）文件是否可以下载，0不可以，1可以',

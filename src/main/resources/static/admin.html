@@ -33,7 +33,7 @@
             <a href="#download-manager"><span class="glyphicon glyphicon-cloud-download">&nbsp;<b>下载记录</b></span></a>
         </li>
         <li class="jq-nav-item">
-            <a href="#category-manager"><span class="glyphicon glyphicon-filter">&nbsp;<b>分类管理</b></span></a>
+            <a href="#category-manager"><span class="glyphicon glyphicon-filter">&nbsp;<b>项目管理</b></span></a>
         </li>
         <li class="jq-nav-item">
             <a href="#file-manager"><span class="glyphicon glyphicon-file">&nbsp;<b>文件管理</b></span></a>
@@ -70,7 +70,7 @@
                     <th>邮箱</th>
                     <th>文件名</th>
                     <th>文件路径</th>
-                    <th>分类名</th>
+                    <th>项目名</th>
                     <th>链接</th>
                     <th>上传时间</th>
                 </tr>
@@ -111,7 +111,7 @@
                     <th>用户名</th>
                     <th>邮箱</th>
                     <th>文件名</th>
-                    <th>分类</th>
+                    <th>项目</th>
                     <th>链接</th>
                     <th>下载时间</th>
                 </tr>
@@ -174,7 +174,7 @@
                     <th>文件编号</th>
                     <th>用户名</th>
                     <th>本地路径</th>
-                    <th>分类</th>
+                    <th>项目</th>
                     <th>链接</th>
                     <th>下载次数</th>
                     <th>上传时间</th>
@@ -291,15 +291,17 @@
                 class="glyphicon glyphicon-arrow-down"></i> 获取更多</b></button>
         <br/>
     </div>
-    <!--分类管理-->
+    <!--项目管理-->
     <div class="row jq-tab hide" id="category-manager">
         <div class="col-sm-3 col-12 offset-sm-1 padding-0">
             <div class="content-box rounded" style="padding: 0 1rem;">
                 <br/>
-                <h4 class="text-center" id="category-title">添加新分类</h4><br/>
+                <h4 class="text-center" id="category-title">添加新项目</h4><br/>
                 <input type="hidden" value="0" id="category-key"/>
                 <input type="hidden" value="0" id="category-id"/>
-                <input class="form-control" id="category-name" title="分类名称" placeholder="新分类名称" type="text"/>
+                <input class="form-control" id="category-code" title="项目号" placeholder="新项目号" type="number"/>
+                <br/>
+                <input class="form-control" id="category-name" title="项目名称" placeholder="新项目名称" type="text"/>
                 <br/>
                 <button class="btn btn-primary btn-block" onclick="saveCategory();">保存</button>
                 <br/>
@@ -312,6 +314,7 @@
                 <thead>
                 <tr>
                     <th>序号</th>
+                    <th>项目号</th>
                     <th>名称</th>
                     <th>创建时间</th>
                     <th class="text-center">动作</th>
@@ -321,6 +324,7 @@
                 <tr v-for="(category,key) in categories">
                     <td class="hide">{{key}}</td>
                     <td class="category-id">{{category.id}}</td>
+                    <td class="category-code">{{category.code}}</td>
                     <td class="category-name">{{category.name}}</td>
                     <td>{{new Date(category.createTime).format('yyyy-MM-dd hh:mm:ss')}}</td>
                     <td class="text-center">

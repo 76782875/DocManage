@@ -21,8 +21,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDAO, Category> impl
     public CategoryServiceImpl(CategoryDAO categoryDAO) {this.categoryDAO = categoryDAO;}
 
     @Override
-    public boolean insert(String name) {
-        return Checker.isNotNull(name) && categoryDAO.insertCategory(name);
+    public boolean insert(String name,int code) {
+        return Checker.isNotNull(code) && Checker.isNotNull(name) && categoryDAO.insertCategory(name,code);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDAO, Category> impl
     }
 
     @Override
-    public boolean update(int id, String name) {
-        return Checker.isNotEmpty(name) && isCategorized(id) && categoryDAO.updateNameById(id, name);
+    public boolean update(int id, String name,int code) {
+        return Checker.isNotEmpty(name) && isCategorized(id) && categoryDAO.updateNameById(id, name,code);
     }
 
     private boolean isCategorized(int id) {
