@@ -21,6 +21,8 @@ public class FileRecord {
 
     private String categoryName;
 
+    private int code; //项目号
+
     private String description;
 
     private String tag;
@@ -46,7 +48,7 @@ public class FileRecord {
     private Timestamp downloadTime;
 
     public FileRecord(long id, int userId, String username, String avatar, String fileName, long size, Timestamp
-            createTime, String categoryName, String description, String tag, int checkTimes, int downloadTimes,
+            createTime, String categoryName,int code ,String description, String tag, int checkTimes, int downloadTimes,
                       String visitUrl, int isUploadable, int isDeletable, int isUpdatable, int isDownloadable, int
                               isVisible, Timestamp downloadTime) {
         this.id = id;
@@ -57,6 +59,7 @@ public class FileRecord {
         this.size = size;
         this.createTime = createTime;
         this.categoryName = categoryName;
+        this.code = code;
         this.description = description;
         this.tag = tag;
         this.checkTimes = checkTimes;
@@ -71,7 +74,7 @@ public class FileRecord {
     }
 
     public FileRecord(long id, int userId, String username, String avatar, String fileName, long size, Timestamp
-            createTime, String categoryName, String description, String tag, int checkTimes, int downloadTimes,
+            createTime, String categoryName,int code,String description, String tag, int checkTimes, int downloadTimes,
                       String visitUrl, int isUploadable, int isDeletable, int isUpdatable, int isDownloadable, int
                               isVisible) {
         this.id = id;
@@ -82,6 +85,7 @@ public class FileRecord {
         this.size = size;
         this.createTime = createTime;
         this.categoryName = categoryName;
+        this.code = code;
         this.description = description;
         this.tag = tag;
         this.checkTimes = checkTimes;
@@ -254,5 +258,13 @@ public class FileRecord {
 
     public void setIsVisible(int isVisible) {
         this.isVisible = isVisible;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

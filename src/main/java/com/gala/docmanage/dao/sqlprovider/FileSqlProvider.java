@@ -88,8 +88,7 @@ public class FileSqlProvider {
     private String getBaseSql(boolean isDownloaded) {
         return new SQL() {{
             SELECT("distinct f.id,f.user_id,u.username,u.avatar,f.name file_name,f.size,f.create_time,c.name " +
-                    "category_name,f"
-                    + ".description,f.tag,f.check_times,f.download_times,f.visit_url,f.is_uploadable,f.is_deletable,"
+                    "category_name,code,f.description,f.tag,f.check_times,f.download_times,f.visit_url,f.is_uploadable,f.is_deletable,"
                     + "f.is_updatable,f.is_downloadable,f.is_visible");
             if (isDownloaded) {
                 SELECT("d.create_time download_time");
