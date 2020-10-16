@@ -23,9 +23,11 @@ public class FileRecord {
 
     private int code; //项目号
 
-    private String description;
+    private int categoryId; //项目id
 
-    private String tag;
+    private String description;//excel表头数据
+
+    private String tag;//卷案号
 
     private int checkTimes;
 
@@ -48,7 +50,7 @@ public class FileRecord {
     private Timestamp downloadTime;
 
     public FileRecord(long id, int userId, String username, String avatar, String fileName, long size, Timestamp
-            createTime, String categoryName,int code ,String description, String tag, int checkTimes, int downloadTimes,
+            createTime, String categoryName,int code ,int categoryId ,String description, String tag, int checkTimes, int downloadTimes,
                       String visitUrl, int isUploadable, int isDeletable, int isUpdatable, int isDownloadable, int
                               isVisible, Timestamp downloadTime) {
         this.id = id;
@@ -60,6 +62,7 @@ public class FileRecord {
         this.createTime = createTime;
         this.categoryName = categoryName;
         this.code = code;
+        this.categoryId = categoryId;
         this.description = description;
         this.tag = tag;
         this.checkTimes = checkTimes;
@@ -74,7 +77,7 @@ public class FileRecord {
     }
 
     public FileRecord(long id, int userId, String username, String avatar, String fileName, long size, Timestamp
-            createTime, String categoryName,int code,String description, String tag, int checkTimes, int downloadTimes,
+            createTime, String categoryName,int code,int categoryId,String description, String tag, int checkTimes, int downloadTimes,
                       String visitUrl, int isUploadable, int isDeletable, int isUpdatable, int isDownloadable, int
                               isVisible) {
         this.id = id;
@@ -86,6 +89,7 @@ public class FileRecord {
         this.createTime = createTime;
         this.categoryName = categoryName;
         this.code = code;
+        this.categoryId = categoryId;
         this.description = description;
         this.tag = tag;
         this.checkTimes = checkTimes;
@@ -266,5 +270,13 @@ public class FileRecord {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

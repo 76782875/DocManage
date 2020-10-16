@@ -1,5 +1,6 @@
 package com.gala.docmanage.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gala.docmanage.DMApplication;
 import com.gala.docmanage.dao.DownloadedDAO;
 import com.gala.docmanage.dao.FileDAO;
@@ -7,6 +8,7 @@ import com.gala.docmanage.model.AuthRecord;
 import com.gala.docmanage.model.BaseAuthRecord;
 import com.gala.docmanage.model.FileBasicRecord;
 import com.gala.docmanage.util.BeanUtils;
+import com.gala.docmanage.util.ExcelUtils;
 import com.gala.docmanage.util.ServiceUtils;
 import com.gala.docmanage.config.SettingConfig;
 import com.gala.docmanage.entity.Category;
@@ -38,7 +40,7 @@ import java.util.regex.Pattern;
 
 
 @Service
-public class FileServiceImpl implements IFileService {
+public class FileServiceImpl extends ServiceImpl<FileDAO, File> implements IFileService {
 
     private final static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
@@ -67,8 +69,7 @@ public class FileServiceImpl implements IFileService {
     private final DownloadedDAO downloadDAO;
 
     @Autowired
-    public FileServiceImpl(FileDAO fileDAO, ICategoryService categoryService, IAuthService authService,
-                           DownloadedDAO downloadDAO) {
+    public FileServiceImpl(FileDAO fileDAO, ICategoryService categoryService, IAuthService authService, DownloadedDAO downloadDAO) {
         this.fileDAO = fileDAO;
         this.categoryService = categoryService;
         this.authService = authService;
@@ -87,8 +88,7 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor =
-            Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public boolean deleteFiles(String ids) {
         if (Checker.isNotEmpty(ids)) {
             String[] id = ids.split(ValueConsts.COMMA_SIGN);
@@ -104,8 +104,7 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor =
-            Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public boolean[] updateUrl(int id, String oldLocalUrl, String localUrl, String visitUrl) {
         boolean[] b = new boolean[]{false, false};
         boolean canUpdateLocalUrl = Checker.isExists(oldLocalUrl) && Checker.isNotEmpty(localUrl) && Checker
@@ -125,7 +124,7 @@ public class FileServiceImpl implements IFileService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor =
             Exception.class)
-    public boolean updateFileInfo(long id, User user, String name, String category, String tag, String description) {
+    public boolean updateFileInfo(long id, User user, String name, int category, String tag, String description) {
         File file = fileDAO.getById(id);
         if (Checker.isNotNull(file) && file.getIsUpdatable() == 1) {
             AuthRecord authRecord = authService.getByFileIdAndUserId(id, user.getId());
@@ -142,7 +141,7 @@ public class FileServiceImpl implements IFileService {
                 file.setSuffix(suffix);
                 file.setLocalUrl(newLocalUrl);
                 file.setVisitUrl(newVisitUrl);
-                file.setCategoryId(categoryService.getIdByName(category));
+                file.setCategoryId(category);
                 file.setTag(tag);
                 file.setDescription(description);
                 boolean isValid = (localUrl.endsWith(ValueConsts.SEPARATOR + name) || (!Checker.isExists(newLocalUrl)
@@ -182,8 +181,7 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor =
-            Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public boolean removeById(long id) {
         downloadDAO.removeByFileId(id);
         authService.removeByFileId(id);
@@ -213,9 +211,9 @@ public class FileServiceImpl implements IFileService {
         if (Checker.isNotNull(file)) {
             authRecord = authService.getByFileIdAndUserId(file.getId(), Checker.isNull(user) ? 0 : user.getId());
         }
-        boolean canDownload = Checker.isNotNull(file) && file.getIsDownloadable() == 1 && (downloadable || (Checker
-                .isNull(authRecord) ? (Checker.isNotNull(user) && user.getIsDownloadable() == 1) : authRecord
-                .getIsDownloadable() == 1));
+        boolean canDownload = Checker.isNotNull(file) && file.getIsDownloadable() == 1
+                && (downloadable || (Checker.isNull(authRecord) ? (Checker.isNotNull(user)
+                && user.getIsDownloadable() == 1) : authRecord.getIsDownloadable() == 1));
         if (canDownload) {
             fileDAO.updateDownloadTimesById(file.getId());
             if (Checker.isNotNull(user)) {
@@ -232,22 +230,19 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    public List<FileRecord> listAll(int userId, int offset, int categoryId, String orderBy, String search) {
-        return fileDAO.listAll(userId, offset, categoryId, orderBy, search);
+    public List<FileRecord> listAll(int userId, int offset, int categoryId,String tag,int fileId,String fileSuffix,String orderBy, String search) {
+        return fileDAO.listAll(userId, offset, categoryId, tag, fileId, fileSuffix, orderBy, search);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor =
-            Exception.class)
-    public boolean upload(int categoryId, String tag, String description, String prefix, MultipartFile multipartFile,
-                          User user) {
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
+    public boolean upload(int categoryId, String tag, String description, String prefix, MultipartFile multipartFile, User user) {
         if (user.getIsUploadable() == 1) {
             String name = multipartFile.getOriginalFilename();
             String suffix = FileExecutor.getFileSuffix(name);
             String localUrl = SettingConfig.getUploadStoragePath() + ValueConsts.SEPARATOR + name;
             Category category = categoryService.getById(categoryId);
-            long maxSize = Formatter.sizeToLong(DMApplication.settings.getStringUseEval(ConfigConsts
-                    .FILE_MAX_SIZE_OF_SETTING));
+            long maxSize = Formatter.sizeToLong(DMApplication.settings.getStringUseEval(ConfigConsts.FILE_MAX_SIZE_OF_SETTING));
             long size = multipartFile.getSize();
             boolean fileExists = localUrlExists(localUrl);
             //检测标签是否合法
@@ -265,16 +260,13 @@ public class FileServiceImpl implements IFileService {
                 }
             }
             //是否可以上传
-            boolean canUpload = !multipartFile.isEmpty() && size <= maxSize && Pattern.compile(DMApplication
-                    .settings.getStringUseEval(ConfigConsts.FILE_SUFFIX_MATCH_OF_SETTING)).matcher(suffix).matches()
-                    && (Checker.isNotExists(localUrl) || !fileExists || DMApplication.settings.getBooleanUseEval
-                    (ConfigConsts.FILE_COVER_OF_SETTING));
-            logger.info("is empty [" + multipartFile.isEmpty() + "], file size [" + size + "], max file size [" +
-                    maxSize + "]");
+            boolean canUpload = !multipartFile.isEmpty() && size <= maxSize
+                    && Pattern.compile(DMApplication.settings.getStringUseEval(ConfigConsts.FILE_SUFFIX_MATCH_OF_SETTING)).matcher(suffix).matches()
+                    && (Checker.isNotExists(localUrl) || !fileExists || DMApplication.settings.getBooleanUseEval(ConfigConsts.FILE_COVER_OF_SETTING));
+            logger.info("is empty [" + multipartFile.isEmpty() + "], file size [" + size + "], max file size [" + maxSize + "]");
             if (canUpload) {
-                String visitUrl = getRegularVisitUrl(Checker.isNotEmpty(prefix) && user.getPermission() > 1 ? prefix
-                        : DMApplication.settings.getStringUseEval(ConfigConsts.CUSTOM_LINK_RULE_OF_SETTING), user,
-                        name, suffix, category);
+                String visitUrl = getRegularVisitUrl(Checker.isNotEmpty(prefix)
+                                && user.getPermission() > 1 ? prefix : DMApplication.settings.getStringUseEval(ConfigConsts.CUSTOM_LINK_RULE_OF_SETTING), user, name, suffix, category);
                 if (fileExists) {
                     removeByLocalUrl(localUrl);
                 }
@@ -284,10 +276,16 @@ public class FileServiceImpl implements IFileService {
                 try {
                     multipartFile.transferTo(new java.io.File(localUrl));
                     logger.info("local url of upload file: " + localUrl);
-                    File file = new File(name, suffix, localUrl, visitUrl, WebUtils.scriptFilter(description),
-                            WebUtils.scriptFilter(tag), user.getId(), categoryId);
+                    File file = new File(name, suffix, localUrl, visitUrl, WebUtils.scriptFilter(description), WebUtils.scriptFilter(tag), user.getId(), categoryId);
                     int[] auth = SettingConfig.getAuth(ConfigConsts.FILE_DEFAULT_AUTH_OF_SETTING);
                     file.setAuth(auth[0], auth[1], auth[2], auth[3], auth[4]);
+
+                    //识别文件内容
+                    if("xlsx".equals(file.getSuffix()) || "xls".equals(file.getSuffix())){
+                        String excelData = ExcelUtils.getExcelData(file.getLocalUrl());
+                        file.setDescription(excelData);
+                    }
+
                     boolean isSuccess = fileDAO.insertFile(file);
                     if (isSuccess) {
                         long fileId = fileDAO.getIdByLocalUrl(localUrl);
@@ -329,8 +327,7 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor =
-            Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public boolean shareFiles(String prefix, String files, User user) {
         if (Checker.isNotEmpty(files)) {
             String[] paths = files.split(ValueConsts.COMMA_SIGN);
@@ -377,4 +374,5 @@ public class FileServiceImpl implements IFileService {
         return (List<FileBasicRecord>) ServiceUtils.invokeFileFilter(fileDAO, "listBasicBy", user, file, category,
                 offset);
     }
+
 }

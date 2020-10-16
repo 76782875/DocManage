@@ -1,5 +1,7 @@
 package com.gala.docmanage.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.gala.docmanage.entity.File;
 import com.gala.docmanage.model.BaseAuthRecord;
 import com.gala.docmanage.model.FileBasicRecord;
 import com.gala.docmanage.entity.User;
@@ -7,11 +9,11 @@ import com.gala.docmanage.model.FileRecord;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
+
 import java.util.List;
 
 
-public interface IFileService {
+public interface IFileService extends IService<File> {
 
     /**
      * 更新文件权限
@@ -65,7 +67,7 @@ public interface IFileService {
      *
      * @return 是否更新成功
      */
-    boolean updateFileInfo(long id, User user, String name, String category, String tag, String description);
+    boolean updateFileInfo(long id, User user, String name, int category, String tag, String description);
 
     /**
      * 删除文件，验证权限
@@ -156,7 +158,7 @@ public interface IFileService {
      *
      * @return {@link List}
      */
-    List<FileRecord> listAll(int userId, int offset, int categoryId, String orderBy, String search);
+    List<FileRecord> listAll(int userId, int offset, int categoryId,String tag,int fileId,String fileSuffix,String orderBy, String search);
 
     /**
      * 上传文件
@@ -170,8 +172,7 @@ public interface IFileService {
      *
      * @return 是否上传成功
      */
-    boolean upload(int categoryId, String tag, String description, String prefix, MultipartFile multipartFile, User
-            user);
+    boolean upload(int categoryId, String tag, String description, String prefix, MultipartFile multipartFile, User user);
 
     /**
      * 分享服务器本地文件
@@ -222,4 +223,5 @@ public interface IFileService {
      * @return {@link List}
      */
     List<FileBasicRecord> listBasicAll(String user, String file, String category, int offset);
+
 }

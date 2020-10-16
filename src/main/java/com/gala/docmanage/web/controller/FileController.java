@@ -2,6 +2,7 @@ package com.gala.docmanage.web.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gala.docmanage.enums.InterceptorLevel;
 import com.gala.docmanage.util.BeanUtils;
 import com.gala.docmanage.util.ControllerUtils;
@@ -21,11 +22,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.gala.docmanage.entity.File;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -47,8 +49,8 @@ public class FileController {
     }
 
     @ApiOperation(value = "获取我的下载记录")
-    @ApiImplicitParams({@ApiImplicitParam(name = "offset", value = "偏移量", required = true), @ApiImplicitParam(name =
-            "search", value = "记录匹配（允许为空）")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "offset", value = "偏移量", required = true)
+            , @ApiImplicitParam(name = "search", value = "记录匹配（允许为空）")})
     @AuthInterceptor(InterceptorLevel.USER)
     @RequestMapping(value = "/user/downloaded", method = RequestMethod.GET)
     public String getUserDownloaded(int offset, String search) {
@@ -72,26 +74,30 @@ public class FileController {
             @ApiImplicitParam(name = "prefix", value = "文件前缀（仅适用于管理员上传文件，普通用户无效）")})
     @AuthInterceptor(InterceptorLevel.USER)
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String upload(int categoryId, String tag, String description, String prefix, @RequestParam("file")
-            MultipartFile multipartFile) {
+    public String upload(int categoryId, String tag, String description, String prefix, @RequestParam("file") MultipartFile multipartFile) {
         User user = (User) request.getSession().getAttribute(ValueConsts.USER_STRING);
-        return ControllerUtils.getResponse(fileService.upload(categoryId, tag, description, prefix, multipartFile,
-                user));
+        return ControllerUtils.getResponse(fileService.upload(categoryId, tag, description, prefix, multipartFile, user));
     }
 
     @ApiOperation(value = "获取文件记录")
-    @ApiImplicitParams({@ApiImplicitParam(name = "offset", value = "偏移量", required = true), @ApiImplicitParam(name =
-            "categoryId", value = "分类ID", required = true), @ApiImplicitParam(name = "orderBy", value = "排序方式",
-            required = true, example = "id desc"), @ApiImplicitParam(name = "search", value = "记录匹配（允许为空）")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "offset", value = "偏移量", required = true)
+            , @ApiImplicitParam(name = "categoryId", value = "分类ID", required = true)
+            , @ApiImplicitParam(name = "tag", value = "卷案号")
+            , @ApiImplicitParam(name = "fileId", value = "文件号")
+            , @ApiImplicitParam(name = "fileSuffix", value = "文件类型")
+//            , @ApiImplicitParam(name = "orderBy", value = "排序方式", example = "id desc")
+            , @ApiImplicitParam(name = "search", value = "记录匹配（允许为空）")})
     @AuthInterceptor(InterceptorLevel.NONE)
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public String getAll(int offset, int categoryId, String orderBy, String search) {
+//    public String getAll(int offset, int categoryId, String orderBy, String search) {
+
+    public String getAll(int offset, int categoryId,String tag,int fileId,String fileSuffix, String search) {
         User user = (User) request.getSession().getAttribute(ValueConsts.USER_STRING);
-        boolean canGet = DMApplication.settings.getBooleanUseEval(ConfigConsts.ANONYMOUS_VISIBLE_OF_SETTING) ||
-                (Checker.isNotNull(user) && user.getIsVisible() == 1);
+        boolean canGet = DMApplication.settings.getBooleanUseEval(ConfigConsts.ANONYMOUS_VISIBLE_OF_SETTING) || (Checker.isNotNull(user) && user.getIsVisible() == 1);
+
         if (canGet) {
             int userId = Checker.isNull(user) ? 0 : user.getId();
-            return Formatter.listToJson(fileService.listAll(userId, offset, categoryId, orderBy, search));
+            return Formatter.listToJson(fileService.listAll(userId, offset, categoryId, tag,fileId,fileSuffix,"id desc", search));
         } else {
             jsonObject.put("error", "权限被限制，无法获取资源，请联系管理员");
             return jsonObject.toString();
@@ -122,11 +128,11 @@ public class FileController {
             true), @ApiImplicitParam(name = "description", value = "文件描述", required = true)})
     @AuthInterceptor(InterceptorLevel.USER)
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public String updateFileInfo(@PathVariable("id") long id, String name, String category, String tag, String
-            description) {
+    public String updateFileInfo(@PathVariable("id") long id, String name, String category, String tag, String description) {
         User user = (User) request.getSession().getAttribute(ValueConsts.USER_STRING);
         jsonObject.put("status", "error");
-        if (fileService.updateFileInfo(id, user, name, category, tag, description)) {
+        Integer cty = Integer.valueOf(category);
+        if (fileService.updateFileInfo(id, user, name, cty, tag, description)) {
             jsonObject.put("status", "success");
         } else {
             jsonObject.put("message", "格式不正确或权限不够，更新失败，请联系管理员");
@@ -149,10 +155,10 @@ public class FileController {
     @AuthInterceptor(InterceptorLevel.ADMIN)
     @RequestMapping(value = "/server", method = RequestMethod.GET)
     public String getServerFilesByPath(String path) {
-        File[] files = FileExecutor.listFile(Checker.isEmpty(path) ? (Checker.isWindows() ? "C:\\" : "/") : path);
+        java.io.File[] files = FileExecutor.listFile(Checker.isEmpty(path) ? (Checker.isWindows() ? "C:\\" : "/") : path);
         JSONArray array = new JSONArray();
         if (Checker.isNotNull(files)) {
-            for (File file : files) {
+            for (java.io.File file : files) {
                 array.add(BeanUtils.beanToJson(file));
             }
         }
@@ -213,5 +219,16 @@ public class FileController {
     public void getResource(HttpServletResponse response) throws IOException {
         ControllerUtils.loadResource(response, fileService.getResource(request.getServletPath(), request),
                 ValueConsts.FALSE);
+    }
+
+
+    @ApiOperation(value = "获取文件信息")
+    @ApiImplicitParams({@ApiImplicitParam(name = "categoryId", value = "分类ID", required = true)})
+    @AuthInterceptor(InterceptorLevel.NONE)
+    @RequestMapping(value = "/allInfo", method = RequestMethod.GET)
+    public String getAllInfo(int categoryId) {
+        QueryWrapper qw = new QueryWrapper();
+        List<File> infos = fileService.list(qw);
+        return Formatter.listToJson(infos);
     }
 }

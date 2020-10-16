@@ -1,5 +1,6 @@
 package com.gala.docmanage.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gala.docmanage.model.BaseAuthRecord;
 import com.gala.docmanage.model.FileBasicRecord;
 import com.gala.docmanage.dao.sqlprovider.FileSqlProvider;
@@ -12,7 +13,7 @@ import java.util.List;
 
 
 @Repository
-public interface FileDAO {
+public interface FileDAO extends BaseMapper<File> {
 
     /**
      * 获取文件权限
@@ -291,8 +292,9 @@ public interface FileDAO {
      * @return {@link List}
      */
     @SelectProvider(type = FileSqlProvider.class, method = "getAll")
-    List<FileRecord> listAll(@Param("userId") int userId, @Param("offset") int offset, @Param("categoryId") int
-            categoryId, @Param("orderBy") String orderBy, @Param("search") String search);
+    List<FileRecord> listAll(@Param("userId") int userId, @Param("offset") int offset, @Param("categoryId") int categoryId
+            , @Param("tag") String tag, @Param("fileId") int fileId, @Param("fileSuffix") String fileSuffix
+            , @Param("orderBy") String orderBy, @Param("search") String search);
 
     /**
      * 获取用户的上传资源

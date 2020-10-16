@@ -145,14 +145,26 @@ function getOrderBy() {
 }
 
 $(document).ready(function () {
-    $("#search").keyup(function () {
+
+    // $("#search").keyup(function () {
+    //     /** @namespace window.event.keyCode */
+    //     if (window.event.keyCode === 13) {
+    //         search = $('#search').val();
+    //         offset = 0;
+    //         getPage();
+    //     }
+    // });
+
+    $("#searchTab").keyup(function () {
         /** @namespace window.event.keyCode */
         if (window.event.keyCode === 13) {
-            search = $('#search').val();
+            search = $('#searchTab').val();
             offset = 0;
             getPage();
         }
     });
+
+
     $(".content-filter").change(function () {
         offset = 0;
         getResource(getOrderBy());
@@ -268,14 +280,17 @@ function getUserUploaded() {
         }
     });
 }
-
+//档案筛选
 function getResource(orderBy) {
     currentTab = "#resources-content";
     layer.load(1);
     $.get("/file/all", {
         offset: offset,
         categoryId: $("#category").val(),
-        orderBy: orderBy,
+        tag:$("#tag").val(),
+        fileId:$("#fileId").val(),
+        fileSuffix:$("#fileSuffix").val(),
+        // orderBy: orderBy,
         search: search
     }, function (data) {
         layer.closeAll();
@@ -309,8 +324,9 @@ function setResources(resources, tabId) {
                 "<div class='col-sm-11 col-12'><h4><a data-toggle='tooltip' class='visit-url' href='" + resource.visitUrl + "' target='_blank' data-description='" + resource.description + "' title='" + resource.description + "'>" + resource.fileName + "</a>" +
                 ("#uploaded-content" === tabId ? "&emsp;<a href='javascript:;' class='font-1' onclick='editFile();'>编辑</a>&emsp;<a href='javascript:;' class='font-1' onclick='removeFile();'>删除</a>" : "") +
                 "</h4>" +
-                "<p><b class='file-category'>" + resource.categoryName +
-                "</b>&emsp;项目号：<b>" + resource.code +
+                "<p><b>" + resource.categoryName +
+                "</b><input class='file-category' type='hidden' value='"+resource.categoryId+"' />"+
+                "&emsp;项目号：<b>" + resource.code +
                 "</b>&emsp;案卷号：<b class='file-tag'>" + resource.tag + "</b>" +
                 "</b>&emsp;文件号：<b>" + resource.id + "</b>" +
                 "</b>&emsp;文件大小：<b>" + formatSize(resource.size) +
@@ -332,10 +348,12 @@ var srcContentBox;
 
 function editFile() {
     var contentBox = $(event.srcElement).parents(".content-box");
+    var categoryId = $(contentBox).find(".file-category").val();
     srcContentBox = contentBox;
     $("#edit-file-id").val($(contentBox).attr("data-id"));
     $("#edit-file-name").val($(contentBox).find("a.visit-url").text());
-    $("#edit-file-category").val($(contentBox).find("b.file-category").text());
+    // $("#edit-file-category").val($(contentBox).find(".file-category").text());
+    $("#edit-file-category").find("option[value="+categoryId+"]").attr("selected",true);
     $("#edit-file-tag").val($(contentBox).find("b.file-tag").text());
     $("#edit-file-description").val($(contentBox).find("a.visit-url").attr("data-description"));
     $("#edit-file-modal").modal("show");
@@ -405,21 +423,65 @@ function removeFile() {
         });
     });
 }
-
+//档案项目号选择框列表
 $.get("/category/all", function (data) {
     var json = JSON.parse(data);
     var option = "";
     $.each(json, function (i, category) {
-        option += "<option value='" + category.name + "'>" + category.name + "</option>";
+        option += "<option value='" + category.id + "'>" + category.code + "</option>";
     });
     if (!isEmpty(option)) {
         $("#edit-file-category").html(option);
     }
     option = "";
     $.each(json, function (i, category) {
-        option += "<option value='" + category.id + "'>" + category.name + "</option>";
+        option += "<option value='" + category.id + "'>" + category.code + "</option>";
     });
     if (!isEmpty(option)) {
         $("#category").append(option);
     }
+});
+//档案卷案号,文件号,文件类型选择框列表
+$.get("/file/allInfo",{categoryId:"0"},function (data) {
+    var json = JSON.parse(data);
+    var option = "";
+    $.each(json, function (i, file) {
+        option += "<option value='" + file.tag + "'>" + file.tag + "</option>";
+    });
+    if (!isEmpty(option)) {
+        $("#edit-file-tag").html(option);
+    }
+
+    option = "";
+    var set = new Set([]);//卷案号去重
+    $.each(json, function (i, file) {
+        set.add(file.tag);
+        // option += "<option value='" + file.tag + "'>" + file.tag + "</option>";
+    });
+
+    set.forEach((item) => {
+        option += "<option value='" + item + "'>" + item + "</option>";
+    });
+
+    if (!isEmpty(option)) {
+        $("#tag").append(option);
+
+    }
+
+    option = "";
+    $.each(json, function (i, file) {
+        option += "<option value='" + file.id + "'>" + file.id + "</option>";
+    });
+    if (!isEmpty(option)) {
+        $("#fileId").append(option);
+    }
+
+    option = "";
+    $.each(json, function (i, file) {
+        option += "<option value='" + file.suffix + "'>" + file.suffix + "</option>";
+    });
+    if (!isEmpty(option)) {
+        $("#fileSuffix").append(option);
+    }
+
 });

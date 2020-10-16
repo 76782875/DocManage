@@ -6,6 +6,7 @@ import com.zhazhapan.modules.constant.ValueConsts;
 import com.zhazhapan.util.Checker;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
+import org.apache.xmlbeans.impl.xb.xsdschema.All;
 import org.springframework.stereotype.Component;
 
 
@@ -21,7 +22,6 @@ public class FileSqlProvider {
      *
      * @param userId 用户编号
      * @param fileId 文件编号
-     *
      * @return SQL语句
      */
     public String getBasicBy(@Param("userId") int userId, @Param("fileId") long fileId, @Param("fileName") String
@@ -56,12 +56,20 @@ public class FileSqlProvider {
                 + "," + size;
     }
 
-    public String getAll(@Param("offset") int offset, @Param("categoryId") int categoryId, @Param("orderBy") String
-            orderBy, @Param("search") String search) {
-        return getBaseSql(ValueConsts.FALSE) + " where f.is_visible=1" + (categoryId < 1 ? "" : "  and " +
-                "category_id=#{categoryId}") + " and ((select a.is_visible from auth a where a.file_id=f.id and a" +
-                ".user_id=#{userId}) is null or (a.user_id=#{userId} and a.is_visible=1))" + getSqlEnds(offset,
-                orderBy, search);
+    public String getAll(@Param("offset") int offset
+            , @Param("categoryId") int categoryId
+            , @Param("tag") String tag
+            , @Param("fileId") int fileId
+            , @Param("fileSuffix") String fileSuffix
+            , @Param("orderBy") String orderBy
+            , @Param("search") String search) {
+        return getBaseSql(ValueConsts.FALSE) + " where f.is_visible=1"
+                + (categoryId < 1 ? "" : " and " + "category_id=#{categoryId}")
+                + (tag.equals("all") ? "" : " and " + "tag=#{tag}")
+                + (fileId < 1 ? "" : " and " + "f.id=#{fileId}")
+                + (fileSuffix.equals("all") ? "" : " and " + "suffix=#{fileSuffix}")
+                + " and ((select a.is_visible from auth a where a.file_id=f.id and a.user_id=#{userId}) is null or (a.user_id=#{userId} and a.is_visible=1))"
+                + getSqlEnds(offset, orderBy, search);
     }
 
     public String getUserUploaded(@Param("offset") int offset, @Param("search") String search) {
@@ -74,21 +82,35 @@ public class FileSqlProvider {
         return getBaseSql(ValueConsts.TRUE) + " where d.user_id=#{userId}" + getSqlEnds(offset, ValueConsts
                 .EMPTY_STRING, search);
     }
+    //多匹配搜索
+//    private String getSearch(String search) {
+//        if (Checker.isEmpty(search)) {
+//            return ValueConsts.EMPTY_STRING;
+//        } else {
+//            search = "'%" + search + "%'";
+//            return " and (f.name like " + search
+//                    + " or f.visit_url like " + search
+//                    + " or f.description like " + search
+//                    + " or f.tag like " + search
+//                    + " or f.id like " + search
+//                    + " or c.code like " + search
+//                    +")";
+//        }
+//    }
 
     private String getSearch(String search) {
         if (Checker.isEmpty(search)) {
             return ValueConsts.EMPTY_STRING;
         } else {
-            search = "'%" + search + "%'";
-            return " and (f.name like " + search + " or f.visit_url like " + search + " or f.description like " +
-                    search + " or f.tag like " + search + ")";
+            search = "'%" + search + ",%'";
+            return " and (f.description like " + search +")";
         }
     }
 
     private String getBaseSql(boolean isDownloaded) {
         return new SQL() {{
             SELECT("distinct f.id,f.user_id,u.username,u.avatar,f.name file_name,f.size,f.create_time,c.name " +
-                    "category_name,code,f.description,f.tag,f.check_times,f.download_times,f.visit_url,f.is_uploadable,f.is_deletable,"
+                    "category_name,code,f.category_id,f.description,f.tag,f.check_times,f.download_times,f.visit_url,f.is_uploadable,f.is_deletable,"
                     + "f.is_updatable,f.is_downloadable,f.is_visible");
             if (isDownloaded) {
                 SELECT("d.create_time download_time");

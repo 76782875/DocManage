@@ -60,9 +60,9 @@
         </ul>
     </div>
     <div class="form-inline w-80">
-        <input class="form-control border-dark bg-dark text-white form-control-sm w-60" type="search"
-               placeholder="搜索" id="search" style="float: left"/>
-        <a class="nav-link w-10" href="signin#login" style="float: right;color: #b21f2d">注销</a>
+        <!--<input class="form-control border-dark bg-dark text-white form-control-sm w-80" type="search"-->
+               <!--placeholder="万能搜索" id="search" style="float: left"/>-->
+        <a class="nav-link w-10" href="signin#login" style="float: right;color: #b21f2d;font-size: 14px">注销</a>
     </div>
 </nav>
 <br/><br/><br/>
@@ -72,31 +72,64 @@
             <!--资源列表-->
             <div class="tab-pane active" id="resource-tab">
                 <div class="row content-box rounded">
-                    <div class="col-sm-2 col-4">
+                    <div class="col-sm-2 col-3">
                         <br/>
-                        <select class="form-control content-filter" id="category" title="查找指定项目文件"
+                        <select class="form-control content-filter" id="category" title="项目号"
                                 data-toggle="tooltip">
-                            <option value="0">全部</option>
+                            <option value="0">全部项目</option>
                         </select>
                         <br/>
                     </div>
-                    <div class="col-sm-2 col-4">
+                    <div class="col-sm-2 col-3">
                         <br/>
-                        <select class="form-control content-filter" id="order-by" title="排序方法" data-toggle="tooltip">
-                            <option value="id">时间</option>
-                            <option value="download_times">热度</option>
-                            <option value="size">大小</option>
+                        <select class="form-control content-filter" id="tag" title="卷案号"
+                                data-toggle="tooltip">
+                            <option value="all">全部卷案</option>
                         </select>
                         <br/>
                     </div>
-                    <div class="col-sm-2 col-4">
+
+                    <div class="col-sm-2 col-3">
                         <br/>
-                        <select class="form-control content-filter" id="order-way" title="排序方式" data-toggle="tooltip">
-                            <option value="desc">降序</option>
-                            <option value="asc">升序</option>
+                        <select class="form-control content-filter" id="fileId" title="文件号"
+                                data-toggle="tooltip">
+                            <option value="0">全部文件</option>
                         </select>
                         <br/>
                     </div>
+
+                    <div class="col-sm-2 col-3">
+                        <br/>
+                        <select class="form-control content-filter" id="fileSuffix" title="文件种类"
+                                data-toggle="tooltip">
+                            <option value="all">全部种类</option>
+                        </select>
+                        <br/>
+                    </div>
+
+                    <div class="col-sm-2 col-3">
+                        <br/>
+                            <input class="form-control content-filter" id="searchTab" title="表头" data-toggle="tooltip" placeholder="表头搜索"/>
+                        <br/>
+                    </div>
+
+                    <!--<div class="col-sm-2 col-4">-->
+                        <!--<br/>-->
+                        <!--<select class="form-control content-filter" id="order-by" title="排序方法" data-toggle="tooltip">-->
+                            <!--<option value="id">时间</option>-->
+                            <!--<option value="download_times">热度</option>-->
+                            <!--<option value="size">大小</option>-->
+                        <!--</select>-->
+                        <!--<br/>-->
+                    <!--</div>-->
+                    <!--<div class="col-sm-2 col-4">-->
+                        <!--<br/>-->
+                        <!--<select class="form-control content-filter" id="order-way" title="排序方式" data-toggle="tooltip">-->
+                            <!--<option value="desc">降序</option>-->
+                            <!--<option value="asc">升序</option>-->
+                        <!--</select>-->
+                        <!--<br/>-->
+                    <!--</div>-->
                 </div>
                 <br/>
                 <div id="resources-content"></div>
@@ -263,18 +296,18 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">文件信息编辑</h4>
+                <h4 class="modal-title">档案信息编辑</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-9">
+                    <div class="col-sm-8">
                         <input type="hidden" id="edit-file-id" value="0">
                         <input type="text" class="form-control" title="文件名" placeholder="文件名" data-toggle="tooltip"
                                id="edit-file-name"/>
                     </div>
-                    <div class="col-sm-3">
-                        <select class="form-control" id="edit-file-category" title="文件项目" data-toggle="tooltip">
+                    <div class="col-sm-4">
+                        <select class="form-control" id="edit-file-category" title="项目号" data-toggle="tooltip">
                             <option value="0">未分类</option>
                         </select>
                     </div>
@@ -287,12 +320,12 @@
                     </div>
                 </div>
                 <br>
-                <div class="row">
-                    <div class="col-12 col-sm-12">
-                        <textarea class="form-control" id="edit-file-description" placeholder="文件描述" title="文件描述"
-                                  data-toggle="tooltip"></textarea>
-                    </div>
-                </div>
+                <!--<div class="row">-->
+                    <!--<div class="col-12 col-sm-12">-->
+                        <!--<textarea class="form-control" id="edit-file-description" placeholder="文件描述" title="文件描述"-->
+                                  <!--data-toggle="tooltip"></textarea>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="saveFileInfo();">保存</button>
